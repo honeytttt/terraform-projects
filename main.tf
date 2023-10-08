@@ -155,3 +155,29 @@ output "public-ip-address3" {
   value = aws_instance.practice3.public_ip
 }
 
+resource "aws_instance" "practice4" {
+  ami                    = "ami-0df7a207adb9748c7"
+  instance_type          = "t2.micro"
+  key_name               = aws_key_pair.practice1-key.key_name
+  vpc_security_group_ids = [aws_security_group.practice1-sg.id]
+  subnet_id              = aws_subnet.practice1-sn.id
+
+  tags = {
+    Name = "K8S-Bootstrap"
+  }
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = file("~/.ssh/id_rsa")
+    host        = self.public_ip
+  }
+    provisioner "remote-exec" {
+    inline = [
+      "echo 'Hello from the remote instance'",
+      "sudo apt update -y",
+    ]
+  }
+}
+output "public-ip-address4" {
+  value = aws_instance.practice4.public_ip
+}
