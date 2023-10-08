@@ -69,13 +69,17 @@ resource "aws_instance" "practice1" {
   key_name               = aws_key_pair.practice1-key.key_name
   vpc_security_group_ids = [aws_security_group.practice1-sg.id]
   subnet_id              = aws_subnet.practice1-sn.id
+
+  tags = {
+    Name = "Jenkins-Master"
+  }
   connection {
     type        = "ssh"
     user        = "ubuntu"
     private_key = file("~/.ssh/id_rsa")
-    host        = self.public_ip
+    host        = self.public_ip    
   }
-  provisioner "remote-exec" {
+    provisioner "remote-exec" {
     inline = [
       "echo 'Hello from the remote instance'",
       "sudo apt update -y",
