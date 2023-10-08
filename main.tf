@@ -45,6 +45,13 @@ resource "aws_security_group" "practice1-sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
+    description = "http from vpc"
+    from_port   = 9000
+    to_port     = 9000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
     description = "ssh from vpc"
     from_port   = 22
     to_port     = 22
