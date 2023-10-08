@@ -116,3 +116,35 @@ resource "aws_instance" "practice2" {
 output "public-ip-address2" {
   value = aws_instance.practice2.public_ip
 }
+
+resource "aws_instance" "practice3" {
+  ami                    = "ami-0df7a207adb9748c7"
+  instance_type          = "t3.medium"
+  key_name               = aws_key_pair.practice1-key.key_name
+  vpc_security_group_ids = [aws_security_group.practice1-sg.id]
+  subnet_id              = aws_subnet.practice1-sn.id
+  ebs_block_device {
+    device_name = "/dev/sda1"
+    volume_size = 20
+  }
+
+  tags = {
+    Name = "Sonarqube"
+  }
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = file("~/.ssh/id_rsa")
+    host        = self.public_ip
+  }
+    provisioner "remote-exec" {
+    inline = [
+      "echo 'Hello from the remote instance'",
+      "sudo apt update -y",
+    ]
+  }
+}
+output "public-ip-address3" {
+  value = aws_instance.practice3.public_ip
+}
+
